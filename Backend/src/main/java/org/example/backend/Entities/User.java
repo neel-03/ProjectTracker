@@ -1,9 +1,7 @@
 package org.example.backend.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
 
 @Entity
 public class User {
@@ -11,6 +9,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String username;
+    @Column(unique = true)
     private String email;
     private String password;
     private String role;
