@@ -10,9 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@rsuite/responsive-nav": "^5.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rsuite": "^5.53.2"
+    "react-router-dom": "^6.22.0",
+    "rsuite": "^5.53.2",
+    "schema-types": "^2.3.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.55",

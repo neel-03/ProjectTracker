@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { CustomProvider } from "rsuite";
 import App from './App.jsx'
-import 'rsuite/dist/rsuite.min.css';  // or 'rsuite/styles/index.less';
+import { CustomProvider } from "rsuite";
+import "rsuite/dist/rsuite.min.css";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <CustomProvider theme="dark">
+    <CustomProvider theme='light'>
       <App />
     </CustomProvider>
-  </React.StrictMode>
-);
+  </React.StrictMode>,
+)
