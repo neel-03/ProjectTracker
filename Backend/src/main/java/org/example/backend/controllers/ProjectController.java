@@ -20,7 +20,7 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @PostMapping(value = "")
     public ResponseEntity<?> addProject(@Valid @RequestBody Project project,
                                         BindingResult result) {
 
@@ -39,12 +39,12 @@ public class ProjectController {
         return new ResponseEntity<>(newProject, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @GetMapping(value = "/all")
     public Iterable<Project> getAllProjects() {
         return projectService.findAll();
     }
 
-    @RequestMapping(value = "/{projectId}", method = RequestMethod.GET)
+    @GetMapping(value = "/{projectId}")
     public ResponseEntity<?> getProjectById(@PathVariable("projectId") long id) {
         Project project = projectService.findById(id);
 
@@ -55,7 +55,7 @@ public class ProjectController {
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{projectId}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{projectId}")
     public ResponseEntity<?> deleteProject(@PathVariable("projectId") long id){
         projectService.delete(id);
         return new ResponseEntity<>("Project deleted", HttpStatus.OK);

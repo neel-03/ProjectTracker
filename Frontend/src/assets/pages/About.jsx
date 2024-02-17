@@ -3,12 +3,28 @@ import { Grid, Row, Panel, ButtonToolbar, IconButton } from "rsuite";
 import Logo from "@rsuite/icons/legacy/Github";
 import Technologies from "../components/Technologies";
 export default function About() {
+   const [isMobile, setIsMobile] = React.useState(false);
+   const rowStyle = {
+     minWidth: isMobile ? "0px" : "550px",
+     maxWidth: isMobile ? "300px" : "700px",
+     margin: "70px 0px",
+   };
+   React.useEffect(() => {
+     const handleResize = () => {
+       setIsMobile(window.innerWidth < 768);
+     };
+     handleResize();
+     window.addEventListener("resize", handleResize);
+     return () => {
+       window.removeEventListener("resize", handleResize);
+     };
+   }, []);
   return (
     <>
       <Grid fluid>
         <Row
           className="show-grid"
-          style={{ maxWidth: "800px", marginTop: "70px" }}
+          style={rowStyle}
         >
           <Panel shaded>
             <div style={{ maxWidth: "100%", padding: 20 }}>

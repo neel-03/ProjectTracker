@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import {
   Container,
   Content,
@@ -9,9 +10,10 @@ import {
   FlexboxGrid,
   Schema,
 } from "rsuite";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginCard({ isMobile = false }) {
-
+  const navigate = useNavigate()
   const [state, setState] = React.useState({
     email: "",
     password: "",
@@ -28,13 +30,17 @@ export default function LoginCard({ isMobile = false }) {
     ),
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if (!formRef.current.check()) {
       console.error("Form submission Error");
       return;
     }
-    console.log(state, "user State")
-    alert(state)
+    const res = await axios.post("http://localhost:8080/loginuser", state);
+    console.log(typeof res);
+    console.log(res.data);
+    localStorage.setItem('mail', res.data.username)
+    localStorage.setItem('role', res.data.authorities[0].authority)
+    navigate('/dashbord')
   }
 
   const boxStyle = {

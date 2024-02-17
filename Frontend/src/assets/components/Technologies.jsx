@@ -25,7 +25,7 @@ export default function Technologies() {
           circle
           src="/react.png"
           alt="ReactJs logo"
-          style={{ marginRight: "15px" }}
+          style={{ marginRight: "15px", background: "#232630" }}
         />
       </Whisper>
       <Whisper
@@ -46,7 +46,7 @@ export default function Technologies() {
           circle
           src="/springboot.png"
           alt="Springboot logo"
-          style={{ marginRight: "15px" }}
+          style={{ marginRight: "15px", background: "#e1e1e1" }}
         />
       </Whisper>
       <Whisper
@@ -54,7 +54,10 @@ export default function Technologies() {
         placement="top"
         speaker={
           <Popover>
-            <CustomPopover title={"PostgreSQL"} description={"Popular, Flexible RDBMS"} />
+            <CustomPopover
+              title={"PostgreSQL"}
+              description={"Popular, Flexible RDBMS"}
+            />
           </Popover>
         }
       >
@@ -62,7 +65,7 @@ export default function Technologies() {
           circle
           src="/postgres.png"
           alt="PostgreSQL Logo"
-          style={{ marginRight: "15px" }}
+          style={{ marginRight: "15px", background: "#e1e1e1" }}
         />
       </Whisper>
     </div>

@@ -1,14 +1,15 @@
 import React from "react";
-import { Grid, Row, Panel, ButtonToolbar, IconButton } from "rsuite";
-import GithubLogo from "@rsuite/icons/legacy/Github"
-import LinkedInLogo from "@rsuite/icons/legacy/Linkedin"
+import { Grid, Row, Panel, Stack, ButtonToolbar, IconButton } from "rsuite";
+import GithubLogo from "@rsuite/icons/legacy/Github";
+import LinkedInLogo from "@rsuite/icons/legacy/Linkedin";
+import Send from "@rsuite/icons/Send";
 
 export default function Contact() {
   const [isMobile, setIsMobile] = React.useState(false);
   const rowStyle = {
-    minWidth: "400px",
-    maxWidth: "700px",
-    marginTop: "70px",
+    minWidth: isMobile ? "0px" : "550px",
+    maxWidth: isMobile?"300px":"700px",
+    margin: "70px 0px",
   };
   React.useEffect(() => {
     const handleResize = () => {
@@ -29,13 +30,27 @@ export default function Contact() {
               <h2 style={{ color: "#34c2ff" }}>Contact</h2>
               <h4 style={{ margin: "10px 0px" }}>Contact details</h4>
               <div style={{ marginBottom: "5px" }}>
-                <strong>Email</strong>
-                <p>neelvaghasiya003@gmail.com</p>
+                <Stack wrap spacing={7}>
+                  <strong>Email: </strong>
+                  <p>neelvaghasiya003@gmail.com</p>
+                  <ButtonToolbar>
+                    <IconButton
+                      href="https://mail.google.com/mail/?view=cm&fs=1&to=neelvaghasiya003@gmail.com"
+                      target="_blank"
+                      appearance="primary"
+                      size="sm"
+                      color="green"
+                      icon={<Send />}
+                    >
+                      Compose mail
+                    </IconButton>
+                  </ButtonToolbar>
+                </Stack>
               </div>
-              <div>
+              <Stack wrap spacing={7}>
                 <strong>Phone</strong>
                 <p>+91 6355383364</p>
-              </div>
+              </Stack>
               <br />
               <h4>Get in touch</h4>
               <ButtonToolbar style={{ marginTop: "10px" }}>

@@ -1,6 +1,5 @@
 package org.example.backend.config;
 
-import org.example.backend.Entities.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +25,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/admin").hasAuthority(String.valueOf(Role.ADMIN))
-                        .requestMatchers("/api/project/*").permitAll()
-                        .anyRequest().authenticated())
+//                        .requestMatchers("/admin").hasAuthority("ADMIN")
+//                        .requestMatchers("/api/project/*").permitAll()
+                        .anyRequest().permitAll())
                 .httpBasic(withDefaults())
                 .formLogin(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);

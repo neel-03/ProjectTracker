@@ -1,12 +1,22 @@
-import React from "react";
+import React, {useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 import LoginCard from "../components/cards/LoginCard";
 import HomeCard from "../components/cards/HomeCard";
 import { Grid, Row, Col } from "rsuite";
 
 export default function Login() {
+  
+ 
+  const navigate = useNavigate()
   const [isMobile, setIsMobile] = React.useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (localStorage.getItem("mail") && localStorage.getItem("role")) {
+      navigate("/dashboard")
+    }
+  }, []);
+
+  useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
