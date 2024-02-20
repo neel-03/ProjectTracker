@@ -1,15 +1,14 @@
 package org.example.backend.DTO;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-
-public class UserLoginDTO {
-    @Email(message = "Email should be valid")
-    @NotEmpty(message = "Email field should not be empty")
+public class JwtRequest {
     private String email;
-    @NotBlank(message = "Password field should not be empty")
     private String password;
+
+    public JwtRequest() {}
+    public JwtRequest(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     public String getEmail() {
         return email;

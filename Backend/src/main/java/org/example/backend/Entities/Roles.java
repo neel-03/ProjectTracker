@@ -2,11 +2,9 @@ package org.example.backend.Entities;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "roles")
-public class Role
+public class Roles
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +12,12 @@ public class Role
 
     @Column(nullable=false, unique=true)
     private String role;
+
+    public Roles(){}
+
+    public Roles(String role) {
+        this.role = role;
+    }
 
     public Long getId() {
         return id;

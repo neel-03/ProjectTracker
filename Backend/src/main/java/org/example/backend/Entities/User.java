@@ -3,9 +3,7 @@ package org.example.backend.Entities;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -23,11 +21,8 @@ public class User {
     @Column(nullable=false)
     private String password;
 
-    @OneToOne(fetch = FetchType.LAZY) // Assuming each user has only one role
-    @JoinColumn(name = "role_id") // Name of the foreign key column in the User table
-    private Role role;
-
-    //getters and setters
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    List<Roles> roles = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -61,11 +56,15 @@ public class User {
         this.password = password;
     }
 
-    public Role getRoles() {
-        return role;
+    public List<Roles> getRoles() {
+        return roles;
     }
 
-    public void setRoles(Role role) {
-        this.role = role;
+    public void setRoles(List<Roles> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(Roles role){
+        this.roles.add(role);
     }
 }
