@@ -1,11 +1,14 @@
 package org.example.backend.Entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 @Entity
 public class Project {
@@ -24,6 +27,11 @@ public class Project {
     private String studentName;
 
     private String status;
+
+    private String mentor;
+
+    @Transient
+    private List<String> studentNameList;
 
     public Project() {
     }
@@ -66,5 +74,21 @@ public class Project {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<String> getStudentNameList() {
+        return studentNameList;
+    }
+
+    public void setStudentNameList(List<String> studentNameList) {
+        this.studentNameList = studentNameList;
+    }
+
+    public String getMentor() {
+        return mentor;
+    }
+
+    public void setMentor(String mentor) {
+        this.mentor = mentor;
     }
 }

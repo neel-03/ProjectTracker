@@ -1,17 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Row, Panel, Stack, ButtonToolbar, IconButton } from "rsuite";
 import GithubLogo from "@rsuite/icons/legacy/Github";
 import LinkedInLogo from "@rsuite/icons/legacy/Linkedin";
 import Send from "@rsuite/icons/Send";
+import MyNavbar from "../components/Navbar";
 
-export default function Contact() {
-  const [isMobile, setIsMobile] = React.useState(false);
+export default function Contact({ active }) {
+  const [isMobile, setIsMobile] = React.useState(false)
+  const [data, setData] = useState(false)
   const rowStyle = {
     minWidth: isMobile ? "0px" : "550px",
-    maxWidth: isMobile?"300px":"700px",
+    maxWidth: isMobile ? "300px" : "700px",
     margin: "70px 0px",
   };
-  React.useEffect(() => {
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+    if (token && username && role) {
+      setData(true);
+    }
+  }, [])
+  useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -23,6 +33,7 @@ export default function Contact() {
   }, []);
   return (
     <>
+      <MyNavbar active={active} user={data}/>
       <Grid fluid>
         <Row className="show-grid" style={rowStyle}>
           <Panel shaded>

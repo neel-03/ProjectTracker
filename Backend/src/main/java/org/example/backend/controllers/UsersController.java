@@ -1,5 +1,6 @@
 package org.example.backend.controllers;
 
+import org.example.backend.DTO.UserRequest;
 import org.example.backend.Entities.Roles;
 import org.example.backend.Entities.User;
 import org.example.backend.repository.RoleRepository;
@@ -11,12 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @CrossOrigin
 @RestController
@@ -43,21 +42,44 @@ public class UsersController {
     CustomUserService customUserService;
 
     @PostMapping("")
-    public ResponseEntity<?> addUser(@RequestBody User user){
+    public ResponseEntity<?> addUser(@RequestBody UserRequest userRequest){
         System.out.println("Add user...");
 
-        User u = userRepository.findByEmail(user.getEmail());
+        User existingUser = userRepository.findByEmail(userRequest.getEmail());
 
-        // check if user already exist or not
-        if(u != null){
-            return new ResponseEntity<>("User with "+ user.getEmail() +" mail is already exist", HttpStatus.CONFLICT);
+        // check if user already exists
+        if (existingUser != null) {
+            System.out.println("inside if==================================");
+            return new ResponseEntity<>("exist", HttpStatus.OK);
         }
-        Roles role = roleRepository.findById(2L).orElseThrow(() -> new NoSuchElementException("Role not found with ID: 2"));
 
-        List<Roles>roles = new ArrayList<>();
+        User user = new User();
+        user.setName(userRequest.getName());
+        user.setEmail(userRequest.getEmail());
+        user.setPassword(userRequest.getPassword());
+
+        // retrieve role from the database based on the request body
+        Roles role = roleRepository.findByRole(userRequest.getRole());
+        if (role == null) {
+            return new ResponseEntity<>("Invalid role", HttpStatus.OK);
+        }
+
+        // set the role for the user
+        List<Roles> roles = new ArrayList<>();
         roles.add(role);
         user.setRoles(roles);
+
+        // save the user
         userRepository.save(user);
+
         return new ResponseEntity<>("User created", HttpStatus.OK);
+    }
+    @GetMapping(value = "/mentors")
+    public ResponseEntity<?> getMentors(){
+        List<User> mentors = customUserService.findMentors();
+        if (mentors.isEmpty()) {
+            return new ResponseEntity<>("No mentors found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(mentors, HttpStatus.OK);
     }
 }

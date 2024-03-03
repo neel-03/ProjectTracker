@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Container,
@@ -9,17 +9,21 @@ import {
   Panel,
   FlexboxGrid,
   Schema,
+  useToaster,
+  Notification
 } from "rsuite";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginCard({ isMobile = false }) {
   const navigate = useNavigate()
-  const [state, setState] = React.useState({
+  const [user, setUser] = useState(null)
+  const toaster = useToaster()
+  const [state, setState] = useState({
     email: "",
     password: "",
   });
   const formRef = React.useRef();
-  const [formError, setFormError] = React.useState({});
+  const [formError, setFormError] = useState({});
 
   const loginModel = Schema.Model({
     email: Schema.Types.StringType()
@@ -29,24 +33,43 @@ export default function LoginCard({ isMobile = false }) {
       "Password field is required."
     ),
   });
-
-  const handleSubmit = async() => {
+  const successMessage = <Notification type={"success"} header={'Signed in successfully..!'}/>
+  const errorMessage = <Notification type={"error"} header={'Wrong credentials..!'}/>
+  const formMessage = <Notification type={"error"} header={'Enter valid details'}/>
+  const handleSubmit = async () => {
     if (!formRef.current.check()) {
-      console.error("Form submission Error");
+      toaster.push(formMessage, { placement: "topEnd" });
       return;
     }
-    const res = await axios.post("http://localhost:8080/loginuser", state);
-    console.log(typeof res);
-    console.log(res.data);
-    localStorage.setItem('mail', res.data.username)
-    localStorage.setItem('role', res.data.authorities[0].authority)
-    navigate('/dashbord')
-  }
+    try {
+      const res = await axios.post("http://localhost:8080/loginuser", {
+        ...state,
+      });
+      toaster.push(successMessage, { placement: 'topEnd' })
+      localStorage.setItem("username", res.data.username);
+      localStorage.setItem("role", res.data.role[0].role);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("email", res.data.email);
+      setUser({
+        token: localStorage.getItem('token'),
+        username: localStorage.getItem('username'),
+        role: localStorage.getItem('role'),
+        email: localStorage.getItem('email')
+      })
+    } catch (error) {
+      toaster.push(errorMessage, { placement: "topEnd" });
+    }
+  };
 
   const boxStyle = {
-    margin: isMobile?"40px 0px":"0px"
-  }
+    margin: isMobile ? "40px 0px" : "0px",
+  };
 
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard')
+    }
+  },[user])
   return (
     <Container style={boxStyle}>
       <Content>
@@ -58,7 +81,8 @@ export default function LoginCard({ isMobile = false }) {
               </h3>
               <br />
               <br />
-              <Form fluid
+              <Form
+                fluid
                 ref={formRef}
                 onChange={setState}
                 onCheck={setFormError}
@@ -83,7 +107,12 @@ export default function LoginCard({ isMobile = false }) {
                 </Form.Group>
                 <Form.Group>
                   <ButtonToolbar>
-                    <Button type="submit" appearance="primary" block onClick={handleSubmit}>
+                    <Button
+                      type="submit"
+                      appearance="primary"
+                      block
+                      onClick={handleSubmit}
+                    >
                       Sign in
                     </Button>
                   </ButtonToolbar>

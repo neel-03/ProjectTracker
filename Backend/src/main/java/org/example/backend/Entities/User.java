@@ -22,7 +22,7 @@ public class User {
     private String password;
 
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    List<Roles> roles = new ArrayList<>();
+    List<Roles>  roles =new ArrayList<>();
 
     public Long getId() {
         return id;

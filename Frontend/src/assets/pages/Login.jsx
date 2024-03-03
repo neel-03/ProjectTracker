@@ -3,18 +3,21 @@ import { useNavigate } from "react-router-dom";
 import LoginCard from "../components/cards/LoginCard";
 import HomeCard from "../components/cards/HomeCard";
 import { Grid, Row, Col } from "rsuite";
+import MyNavbar from "../components/Navbar";
 
-export default function Login() {
-  
+export default function Login({ active }) {
  
   const navigate = useNavigate()
   const [isMobile, setIsMobile] = React.useState(false);
 
-  useEffect(() => {
-    if (localStorage.getItem("mail") && localStorage.getItem("role")) {
-      navigate("/dashboard")
-    }
-  }, []);
+ useEffect(() => {
+   const username = localStorage.getItem("username");
+   const role = localStorage.getItem("role");
+   const token = localStorage.getItem("token");
+   if (token && username && role) {
+     navigate("/dashboard");
+   }
+ }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,13 +32,14 @@ export default function Login() {
 
   return (
     <>
+      <MyNavbar active={active}/>
       <Grid fluid>
-        <Row className="show-grid" style={{marginTop:'70px'}}>
+        <Row className="show-grid" style={{ marginTop: "70px" }}>
           <Col xs={24} sm={24} md={10}>
-            <HomeCard isMobile={isMobile}/>
+            <HomeCard isMobile={isMobile} />
           </Col>
           <Col xs={24} sm={24} md={13}>
-            <LoginCard isMobile={isMobile}/>
+            <LoginCard isMobile={isMobile} />
           </Col>
         </Row>
       </Grid>
@@ -43,13 +47,3 @@ export default function Login() {
   );
 }
 
-{
-  /* <Row style={rowStyle}>
-  <Col xs={24} sm={12}>
-    <HomeCard />
-  </Col>
-  <Col xs={24} sm={12}>
-    <LoginCard />
-  </Col>
-</Row>; */
-}

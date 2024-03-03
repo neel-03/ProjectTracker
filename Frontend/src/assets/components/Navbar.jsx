@@ -1,11 +1,7 @@
 import React from "react";
-import { Navbar, Nav, Button } from "rsuite";
-import SignOut from "@rsuite/icons/legacy/SignOut";
+import { Navbar, Nav } from "rsuite";
 
-function MyNavbar({ active, setActive, data }) {
-  const removeData = (e) => {
-    localStorage.clear()
-  }
+function MyNavbar({ active, user=null }) {
   return (
     <>
       <Navbar appearance="inverse">
@@ -13,14 +9,17 @@ function MyNavbar({ active, setActive, data }) {
           <strong>Project Tracker</strong>
         </Navbar.Brand>
         <Nav activeKey={active}>
-          {!data && (
-            <Nav.Item href="/" eventKey="1">
-              Home
+          <Nav.Item href="/" eventKey="1">
+            {user ? "Dashboard" : "Home"}
+          </Nav.Item>
+          {user && (
+            <Nav.Item href="/users" eventKey="4">
+              Users
             </Nav.Item>
           )}
-          {data && (
-            <Nav.Item href="/dashboard" eventKey="10">
-              Dashboard
+          {user && (
+            <Nav.Item href="/projects" eventKey="5">
+              Projects
             </Nav.Item>
           )}
           <Nav.Item href="/about" eventKey="2">
@@ -30,15 +29,6 @@ function MyNavbar({ active, setActive, data }) {
             Contact
           </Nav.Item>
         </Nav>
-        {data && (
-          <Nav pullRight>
-            <Nav.Item onClick={removeData}>
-              <Button color="red" appearance="primary" startIcon={<SignOut />}>
-                Sign out
-              </Button>
-            </Nav.Item>
-          </Nav>
-        )}
       </Navbar>
     </>
   );

@@ -2,6 +2,8 @@ package org.example.backend.controllers;
 
 import jakarta.validation.Valid;
 import org.example.backend.Entities.Project;
+import org.example.backend.Entities.User;
+import org.example.backend.service.CustomUserService;
 import org.example.backend.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +12,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,21 +23,22 @@ import java.util.Map;
 public class ProjectController {
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private CustomUserService userService;
 
     @PostMapping(value = "")
     public ResponseEntity<?> addProject(@Valid @RequestBody Project project,
                                         BindingResult result) {
-
+        System.out.println(project);
         if (result.hasErrors()) {
-
             Map<String, String> errors = new HashMap<>();
-
             for (FieldError error : result.getFieldErrors()) {
                 errors.put(error.getField(), error.getDefaultMessage());
             }
-
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
+        List<String> studentNames = Arrays.asList(project.getStudentName().split(","));
+        project.setStudentNameList(studentNames);
 
         Project newProject = projectService.saveOrUpdate(project);
         return new ResponseEntity<>(newProject, HttpStatus.CREATED);

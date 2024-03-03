@@ -40,30 +40,18 @@ public class LoginController {
         User user = userRepository.findByEmail(email);
 
         if(user == null){
-            return new ResponseEntity<>("User not found", HttpStatus.OK);
+            return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
         }else{
-//            if(!user.getPassword().equals(encoder.encode(request.getPassword()))){
             if(!user.getPassword().equals(request.getPassword())){
-                return new ResponseEntity<>("Incorrect Password", HttpStatus.OK);
+                return new ResponseEntity<>("Incorrect Password", HttpStatus.BAD_REQUEST);
             }
-//            doAuthenticate(request.getEmail(), request.getPassword());
             UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
             //generate token for user
             String token = this.helper.generateToken(userDetails);
 
             System.out.println("token: "+ token);
-            JwtResponse res = new JwtResponse(token, user.getName(), user.getRoles());
+            JwtResponse res = new JwtResponse(token, user.getName(), user.getRoles(), user.getEmail());
             return new ResponseEntity<>(res, HttpStatus.OK);
-        }
-    }
-
-    private void doAuthenticate(String email, String password) {
-
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
-        try {
-            manager.authenticate(authentication);
-        } catch (BadCredentialsException e) {
-            throw new BadCredentialsException(" Invalid Username or Password  !!");
         }
     }
 
