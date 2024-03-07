@@ -20,9 +20,8 @@ public class User {
 
     @Column(nullable=false)
     private String password;
-
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    List<Roles>  roles =new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Roles> roles = new ArrayList<>();
 
     public Long getId() {
         return id;
