@@ -125,12 +125,14 @@ export default function Users({ user, active }) {
     <>
       <MyNavbar user={user} active={active} />
       <Grid fluid>
-        <Panel shaded style={{ margin: "50px" }}>
-          {loading ? (
-            <Loader center />
-          ) : users.length === 0 ? (
+        {loading ? (
+          <Loader center size="md" content={"Please wait..."} />
+        ) : users.length === 0 ? (
+          <Panel shaded style={{ margin: "50px" }}>
             <p>No data available</p>
-          ) : (
+          </Panel>
+        ) : (
+          <Panel shaded style={{ margin: "50px" }}>
             <Table data={users} autoHeight wordWrap width={800}>
               <Column width={40} align="center" fixed="left">
                 <HeaderCell>ID</HeaderCell>
@@ -174,8 +176,8 @@ export default function Users({ user, active }) {
                 </Cell>
               </Column>
             </Table>
-          )}
-        </Panel>
+          </Panel>
+        )}
       </Grid>
       <Modal
         backdrop="static"

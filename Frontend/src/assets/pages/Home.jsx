@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container } from "rsuite";
-import MyNavbar from "../components/Navbar";
 import ErrorPage from "./ErrorPage";
 import Login from "./Login";
 import Contact from "../pages/Contact";

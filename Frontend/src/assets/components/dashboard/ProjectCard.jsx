@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useDispatch } from "react-redux";
 import {
   Panel,
   Row,
@@ -17,9 +17,12 @@ import {
 } from "rsuite";
 import PlusIcon from "@rsuite/icons/Plus";
 import ProjectIcon from "@rsuite/icons/Project";
+import { addProject } from "../../../store/actions";
+import axios from "axios";
 
 export default function ProjectCard() {
   const toaster = useToaster();
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [mentors, setMentors] = useState([]);
   const formRef = React.useRef();
@@ -31,6 +34,7 @@ export default function ProjectCard() {
     mentor: "",
   });
   const [students, setStudents] = useState([]);
+  const [tempArr, setTempArr] = useState([]);
   const data = ["IN PROGRESS", "COMPLETED"].map((item) => ({
     label: item,
     value: item,
@@ -55,6 +59,11 @@ export default function ProjectCard() {
     fetchMentors();
   }, []);
 
+  useEffect(() => {
+    const arr = tempArr.flatMap((str) => str.split(/\s*,\s*/));
+    setStudents(arr);
+  }, [tempArr]);
+
   const successMessage = (
     <Notification type={"success"} header={"Project Added successfully..!"} />
   );
@@ -68,10 +77,18 @@ export default function ProjectCard() {
   );
 
   const projectSchema = Schema.Model({
-    title: Schema.Types.StringType().isRequired("Title is required"),
-    description: Schema.Types.StringType().isRequired(
-      "Description is required"
-    ),
+    title: Schema.Types.StringType()
+      .isRequired("Title is required")
+      .maxLength(
+        40,
+        "Title length must be less than or equal to 40 characters"
+      ),
+    description: Schema.Types.StringType()
+      .isRequired("Description is required")
+      .maxLength(
+        500,
+        "Description length must be less than or equal to 500 characters"
+      ),
     status: Schema.Types.StringType().isRequired("Status is required"),
   });
 
@@ -108,31 +125,31 @@ export default function ProjectCard() {
         (mentor) => mentor.id === project.mentor
       );
       const mentorName = selectedMentor ? selectedMentor.name : "";
+      if (mentorName === '' || students.join(",") === "") {
+        toaster.push(
+          <Notification
+            type={"error"}
+            header={"Please fill all the details"}
+          />,
+          { placement: "topEnd" }
+        );
+        return
+      }
       const updatedProject = {
         ...project,
-        studentName: students.join(","),
+        studentName: students.join(", "),
         mentor: mentorName,
       };
       setProject(updatedProject);
 
-      // Submit the form with updated project state
-      const res = await axios.post(
-        "http://localhost:8080/api/project",
-        {
-          ...updatedProject,
-        },
-        {
-          headers: {
-            Authorization: `Token ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await dispatch(addProject(updatedProject));
 
-      console.log('res:::::',res.data);
-      console.log('proj::::', project)
       toaster.push(successMessage, { placement: "topEnd" });
+      setStudents([])
+      setTempArr([])
       handleClose();
     } catch (err) {
+      console.log(err)
       toaster.push(errorMessage, { placement: "topEnd" });
     }
   };
@@ -184,7 +201,13 @@ export default function ProjectCard() {
           >
             <Form.Group>
               <Form.ControlLabel>Title:</Form.ControlLabel>
-              <Form.Control name="title" accepter={Input} autoComplete="off" />
+              <Form.Control
+                name="title"
+                accepter={Input}
+                autoComplete="off"
+                value={project.title}
+                onChange={(value) => setProject({ ...project, title: value })}
+              />
             </Form.Group>
             <Form.Group>
               <Form.ControlLabel>Description:</Form.ControlLabel>
@@ -207,10 +230,9 @@ export default function ProjectCard() {
               <Form.ControlLabel>Select a status:</Form.ControlLabel>
               <InputPicker
                 data={data}
-                style={{ width: 224 }}
-                name="status"
                 value={project.status}
                 onChange={(value) => setProject({ ...project, status: value })}
+                style={{ width: 224 }}
               />
             </Form.Group>
             <Form.Group>
@@ -218,7 +240,7 @@ export default function ProjectCard() {
               <TagInput
                 placeholder="Enter student names"
                 value={students}
-                onChange={(value) => setStudents(value)}
+                onChange={(value) => setTempArr(value)}
                 menuStyle={{ width: 300 }}
                 style={{ width: "224px", minHeight: "auto", height: "auto" }}
               />
@@ -230,10 +252,9 @@ export default function ProjectCard() {
                   label: mentor.name,
                   value: mentor.id,
                 }))}
-                style={{ width: 224 }}
-                name="mentor"
                 value={project.mentor}
                 onChange={(value) => setProject({ ...project, mentor: value })}
+                style={{ width: 224 }}
               />
             </Form.Group>
             <ButtonToolbar>
