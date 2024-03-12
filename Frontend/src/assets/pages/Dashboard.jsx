@@ -83,7 +83,6 @@ export default function Dashboard({ user, active }) {
           </Col>
         </Row>
       </Grid>
-      {/* {JSON.stringify(user, null, 2)} */}
     </>
   );
 }

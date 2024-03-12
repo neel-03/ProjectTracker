@@ -44,7 +44,7 @@ export default function ProjectCard() {
     const fetchMentors = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/user/mentors",
+          `${import.meta.env.VITE_URL}/api/user/mentors`,
           {
             headers: {
               Authorization: `Token ${localStorage.getItem("token")}`,
@@ -267,10 +267,6 @@ export default function ProjectCard() {
             </ButtonToolbar>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
-          {JSON.stringify(project, null, 2)}
-          {JSON.stringify(students, null, 2)}
-        </Modal.Footer>
       </Modal>
     </>
   );

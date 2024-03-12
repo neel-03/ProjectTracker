@@ -42,7 +42,7 @@ export default function LoginCard({ isMobile = false }) {
       return;
     }
     try {
-      const res = await axios.post("http://localhost:8080/loginuser", {
+      const res = await axios.post(`${import.meta.env.VITE_URL}/loginuser`, {
         ...state,
       });
       toaster.push(successMessage, { placement: 'topEnd' })

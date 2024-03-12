@@ -4,7 +4,6 @@ import {
   Panel,
   Stack,
   Container,
-  Row,
   Grid,
   IconButton,
   ButtonToolbar,
@@ -13,6 +12,7 @@ import {
   InputPicker,
   Input,
   Button,
+  Loader,
   TagInput,
   Notification,
   Schema,
@@ -39,6 +39,7 @@ export default function Projects({ user, active }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [students, setStudents] = useState([]);
   const [tempArr, setTempArr] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [project, setProject] = useState({
     title: "",
     description: "",
@@ -48,7 +49,7 @@ export default function Projects({ user, active }) {
   });
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [sortOrder, setSortOrder] = useState(null);
-  // Step 1: Add state variable for search query
+  
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -57,14 +58,18 @@ export default function Projects({ user, active }) {
   }, [tempArr]);
 
   useEffect(() => {
-    dispatch(getAllProjects());
+    const fetchProject = async () => {
+      await dispatch(getAllProjects());
+      setLoading(false)
+    }
+    fetchProject()
   }, [dispatch]);
 
   useEffect(() => {
     const fetchMentors = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/user/mentors",
+          `${import.meta.env.VITE_URL}/api/user/mentors`,
           {
             headers: {
               Authorization: `Token ${localStorage.getItem("token")}`,
@@ -198,8 +203,11 @@ export default function Projects({ user, active }) {
     }
   };
 
-  const handleConfirmDelete = () => {
-    dispatch(deleteProject(selectedProjectId));
+  const handleConfirmDelete = async () => {
+    await dispatch(deleteProject(selectedProjectId));
+    toaster.push(<Notification type="success" header={"Project deleted successfully..!"} />, {
+      placement: "topEnd",
+    });
     setConfirmDelete(false);
   };
 
@@ -304,13 +312,13 @@ export default function Projects({ user, active }) {
       <Stack style={{ margin: "15px 20px" }} justifyContent="space-between">
         <h2>All projects</h2>
         <Stack spacing={12}>
-          {/* Search input */}
           <Input
             type="text"
             placeholder="Search by project title"
             value={searchQuery}
             onChange={(value) => setSearchQuery(value)}
           />
+
           <Button
             onClick={toggleSortOrder}
             appearance="ghost"
@@ -318,6 +326,7 @@ export default function Projects({ user, active }) {
           >
             Sort by {sortOrder === "asc" ? "In Progress" : "Completed"}
           </Button>
+
           <IconButton
             size="lg"
             icon={<PlusIcon />}
@@ -328,12 +337,19 @@ export default function Projects({ user, active }) {
             Add Project
           </IconButton>
         </Stack>
-        {/* Button to toggle sorting order */}
       </Stack>
-      <Grid style={{ overflowY: "scroll", width: "100%" }}>
-        {allProjects()}
-      </Grid>
 
+      {loading && (
+        <Stack direction="column">
+          <Loader size="md" content={"Please wait..."} />
+        </Stack>
+      )}
+      {!loading && (
+        <Grid style={{ overflowY: "scroll", width: "100%" }}>
+          {allProjects()}
+        </Grid>
+      )}
+      {/* this modal is for Add/Edit operation */}
       <Modal
         backdrop={"static"}
         keyboard={false}
@@ -425,10 +441,6 @@ export default function Projects({ user, active }) {
             </ButtonToolbar>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
-          {JSON.stringify(project, null, 2)}
-          {JSON.stringify(students, null, 2)}
-        </Modal.Footer>
       </Modal>
       {/* modal for delete */}
       <Modal
@@ -441,11 +453,15 @@ export default function Projects({ user, active }) {
         </Modal.Header>
         <Modal.Body>Are you sure you want to delete this project?</Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setConfirmDelete(false)} appearance="subtle">
-            Cancel
+          <Button
+            onClick={handleConfirmDelete}
+            appearance="primary"
+            color="red"
+          >
+            Yes, Delete
           </Button>
-          <Button onClick={handleConfirmDelete} appearance="primary">
-            Delete
+          <Button onClick={() => setConfirmDelete(false)}>
+            Cancel
           </Button>
         </Modal.Footer>
       </Modal>

@@ -78,7 +78,7 @@ export default function UserCard() {
     }
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/user",
+        `${import.meta.env.VITE_URL}/api/user`,
         {
           ...user,
         },

@@ -10,7 +10,7 @@ import {
 export const addProject = (project) => async (dispatch) => {
   try {
     if (project.id) {
-      const response = await axios.post("http://localhost:8080/api/project", project, {
+      const response = await axios.post(`${import.meta.env.VITE_URL}/api/project`, project, {
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -22,7 +22,7 @@ export const addProject = (project) => async (dispatch) => {
       });
     } else {
       const response = await axios.post(
-        "http://localhost:8080/api/project",
+        `${import.meta.env.VITE_URL}/api/project`,
         project,
         {
           headers: {
@@ -51,7 +51,7 @@ export const addProject = (project) => async (dispatch) => {
 
 export const getAllProjects = () => async (dispatch) => {
   try {
-    const res = await axios.get("http://localhost:8080/api/project/all", {
+    const res = await axios.get(`${import.meta.env.VITE_URL}/api/project/all`, {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },
@@ -70,7 +70,7 @@ export const getAllProjects = () => async (dispatch) => {
 };
 
 export const deleteProject = (id) => async (dispatch) => {
-  await axios.delete(`http://localhost:8080/api/project/${id}`, {
+  await axios.delete(`${import.meta.env.VITE_URL}/api/project/${id}`, {
     headers: {
       Authorization: `Token ${localStorage.getItem("token")}`,
     },

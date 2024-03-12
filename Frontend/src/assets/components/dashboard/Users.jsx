@@ -39,11 +39,15 @@ export default function Users({ user, active }) {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("http://localhost:8080/api/user", {
-          headers: {
-            Authorization: `Token ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await axios.get(
+          `${import.meta.env.VITE_URL}/api/user`,
+          {
+            headers: {
+              Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        console.log('process.env fetch')
         setUsers(response.data);
         console.log(response.data);
       } catch (error) {
@@ -65,7 +69,7 @@ export default function Users({ user, active }) {
     try {
       setShowEditModal(false);
       const res = await axios.put(
-        `http://localhost:8080/api/user`,
+        `${import.meta.env.VITE_URL}/api/user`,
         editedUser,
         {
           headers: {
@@ -109,13 +113,25 @@ export default function Users({ user, active }) {
   const deleteUser = async () => {
     try {
       setShowDeleteModal(false);
-      await axios.delete(`http://localhost:8080/api/user/${selectedUser.id}`, {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("token")}`,
-        },
-      });
+      await axios.delete(
+        `${import.meta.env.VITE_URL}/api/user/${selectedUser.id}`,
+        {
+          headers: {
+            Authorization: `Token ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       const updatedUsers = users.filter((u) => u.id !== selectedUser.id);
       setUsers(updatedUsers);
+      toaster.push(
+        <Notification
+          type="success"
+          header={"User deleted successfully..!"}
+        />,
+        {
+          placement: "topEnd",
+        }
+      );
     } catch (error) {
       console.error("Error deleting user:", error);
     }
